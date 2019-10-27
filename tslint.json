@@ -1,0 +1,29 @@
+{
+  "extends": [],
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js"
+    ]
+  },
+  "rules": {
+    "max-classes-per-file": {
+      "options": [2]
+    },
+
+    "member-access": false,
+    "quotemark": false,
+    "trailing-comma": false,
+    "ordered-imports": false,
+    "ban-comma-operator": false,
+    "allowSyntheticDefaultImports": true,
+    "restrict-plus-operands": true,
+    "object-literal-sort-keys": false,
+    "strict-boolean-expressions": false,
+    "no-console": false,
+    "semicolon": false,
+    "arrow-parens": false,
+    "no-submodule-imports": false
+  }
+}
