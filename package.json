@@ -10,7 +10,7 @@
     "@types/faker": "^4.1.2",
     "@types/glob": "^5.0.35",
     "@types/ioredis": "^3.2.7",
-    "@types/jest": "^22.2.3",
+    "@types/jest": "^24.0.21",
     "@types/node": "^8.0.29",
     "@types/node-fetch": "^1.6.9",
     "@types/nodemailer": "^6.2.1",
@@ -20,14 +20,14 @@
     "@types/ws": "^5.1.2",
     "@types/yup": "^0.26.24",
     "copyfiles": "^2.1.1",
-    "jest": "^22.4.3",
+    "jest": "^24.9.0",
     "nodemon": "^1.17.3",
     "rimraf": "^2.6.3",
-    "ts-jest": "^22.4.4",
+    "ts-jest": "^24.1.0",
     "ts-node": "3.3.0",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.12.0",
-    "typescript": "3.3.3333"
+    "typescript": "^3.6.4"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -63,23 +63,8 @@
   },
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/index.ts",
-    "test": "NODE_ENV=test jest --watch",
+    "test": "NODE_ENV=test jest",
     "build": "rimraf dist && tsc && copyfiles -u 1 src/**/*.graphql dist",
     "gen-schema-types": "ts-node src/scripts/createTypes.ts"
-  },
-  "jest": {
-    "globalSetup": "./src/testUtils/callSetup.js",
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
   }
 }

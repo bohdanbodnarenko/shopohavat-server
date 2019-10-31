@@ -11,6 +11,9 @@ export const authProviderMiddleware = async (
     res.status(403).json({ error: "Not authenticated" });
   }
   const token = req.header("Authorization").replace("Bearer ", "");
+  if (!token) {
+    res.status(403).json({ error: "Wrong token" });
+  }
   try {
     const { id } = verify(token, process.env.JWT_SECRET as string);
     const provider = await Provider.findOne({ id });
