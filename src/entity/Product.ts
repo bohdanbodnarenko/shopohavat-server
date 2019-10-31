@@ -15,7 +15,7 @@ export class Product extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column("varchar", { length: 50, unique: true })
+  @Column("varchar", { length: 50 })
   name: string;
 
   @Column("text", { nullable: true })
@@ -33,7 +33,7 @@ export class Product extends BaseEntity {
   @Column("text", { nullable: true })
   description: string;
 
-  @Column("varchar", { length: 100 })
+  @Column("varchar", { length: 100, nullable: true })
   url: string;
 
   @Column("float")
@@ -41,9 +41,6 @@ export class Product extends BaseEntity {
 
   @Column("boolean", { default: false })
   deliverable: boolean;
-
-  @Column("int")
-  providerId: number;
 
   @ManyToOne(() => Provider, { onUpdate: "CASCADE", onDelete: "CASCADE" })
   provider: Provider;
