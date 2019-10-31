@@ -3,8 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
-  BeforeInsert
+  ManyToOne,
+  ManyToMany,
+  JoinTable
 } from "typeorm";
+import { Provider } from "./Provider";
+import { Category } from "./Category";
 
 @Entity()
 export class Product extends BaseEntity {
@@ -37,4 +41,14 @@ export class Product extends BaseEntity {
 
   @Column("boolean", { default: false })
   deliverable: boolean;
+
+  @Column("int")
+  providerId: number;
+
+  @ManyToOne(() => Provider, { onUpdate: "CASCADE", onDelete: "CASCADE" })
+  provider: Provider;
+
+  @ManyToMany(type => Category, category => category.products)
+  @JoinTable()
+  categories: Category[];
 }
