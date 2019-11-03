@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { number } from "yup";
 
 export const validProductSchema = yup.object().shape({
   name: yup
@@ -24,5 +25,6 @@ export const validProductSchema = yup.object().shape({
 
   price: yup.number().required(),
 
-  deliverable: yup.boolean().required()
+  deliverable: yup.boolean().required(),
+  categories: yup.array<number>().required()
 });

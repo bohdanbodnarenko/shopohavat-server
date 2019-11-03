@@ -1,8 +1,12 @@
 import { NextFunction, Request, Response } from "express";
+import { getConnection, In } from "typeorm";
+import * as _ from "lodash";
+
 import { formatYupError } from "../utils/formatYupError";
 import { validProductSchema } from "../validations/product";
 import { Product } from "../entity/Product";
 import { RequestWithProvider } from "../utils/constants";
+import { Category } from "../entity/Category";
 
 export const createProduct = async (
   req: RequestWithProvider,
@@ -27,14 +31,14 @@ export const createProduct = async (
       product.volume == volume &&
       product.weight == weight
   );
-  const isSameIxists = !!productsWithSameName.filter(
+  const isSameExists = !!productsWithSameName.filter(
     product =>
       product.count == count &&
       product.volume == volume &&
       product.weight == weight
   ).length;
 
-  if (isSameIxists) {
+  if (isSameExists) {
     return res.status(400).json([
       {
         path: "Name",
@@ -43,7 +47,9 @@ export const createProduct = async (
     ]);
   }
 
-  const product = Product.create(body);
+  const categoriesId = body.categories;
+  const categories = await Category.find({ where: { id: In(categoriesId) } });
+  const product = Product.create({ ...body, categories });
   product.provider = req.provider;
   await product.save();
 
@@ -61,20 +67,21 @@ export const productById = async (
   }
   const product = await Product.findOne(
     { id: +id },
-    { relations: ["provider"] }
+    { relations: ["provider", "categories"] }
   );
-  delete product.provider.password;
-  if (!product) {
+  if (!product || !product.provider) {
     res.status(404).json({ error: "Product not found" });
   }
+  delete product.provider.password;
   req.productById = product;
   next();
 };
 
 export const getProducts = async (req: Request, res: Response) => {
   const { limit, offset } = req.query;
-  const products = await Product.createQueryBuilder()
+  const products = await Product.createQueryBuilder("product")
     .offset(offset)
+    .leftJoinAndSelect("product.categories", "category")
     .limit(limit || 100)
     .getMany();
   res.json(products);
@@ -87,12 +94,28 @@ export const updateProduct = async (
   req: RequestWithProvider & any,
   res: Response
 ) => {
-  const { id } = req.productById.provider;
-  const isOwner = id === req.provider.id;
+  const { productById } = req,
+    { id } = productById.provider,
+    { body } = req,
+    isOwner = id === req.provider.id;
   if (!isOwner) {
     res.status(403).json({ error: "You can change only your own products" });
   }
-  await Product.update({ id }, req.body);
-  const newProduct = await Product.findOne({ id });
+  if (body.categories && body.categories.length) {
+    body.categories = await Category.find({
+      where: { id: In(body.categories) }
+    });
+  }
+  const tableFields = getConnection()
+      .getMetadata(Product)
+      .columns.map(({ propertyName }) => propertyName),
+    fieldToUpdate = _.pick(body, tableFields);
+  const { raw: newProduct } = await getConnection()
+    .createQueryBuilder()
+    .update(Product)
+    .set(fieldToUpdate)
+    .where("id = :id", { id })
+    .returning("*")
+    .execute();
   res.json(newProduct);
 };
