@@ -28,22 +28,41 @@ export class TestClient {
     });
   }
 
-  //   async forgotPasswordChange(newPassword: string, key: string) {
-  //     return rp.post(this.url, {
-  //       ...this.options,
-  //       body: {
-  //         query: `
-  //           mutation {
-  //             forgotPasswordChange(newPassword: "${newPassword}", key: "${key}") {
-  //               path
-  //               message
-  //             }
-  //           }
-  //         `
-  //       }
-  //     });
-  //   }
-  //
+  async createProduct(
+    body: {
+      price: number;
+      name: string;
+      deliverable: boolean;
+      categories: number[];
+    },
+    token = ""
+  ) {
+    return rp.post(`${this.url}/product`, {
+      ...this.options,
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body
+    });
+  }
+
+  async updateProduct(
+    body: {
+      name: string;
+      categories: number[];
+    },
+    productId,
+    token
+  ) {
+    return rp.put(`${this.url}/product/${productId}`, {
+      ...this.options,
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body
+    });
+  }
+
   async me(token) {
     return rp.get(`${this.url}/me`, {
       ...this.options,

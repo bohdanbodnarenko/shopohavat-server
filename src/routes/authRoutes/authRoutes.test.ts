@@ -5,7 +5,7 @@ import { createTypeormConn } from "../../utils/createTypeormConn";
 import { Provider } from "../../entity/Provider";
 
 faker.seed(Date.now() + 1);
-const email = 'loginTest@test.com',
+const email = "loginTest@test.com",
   password = faker.internet.password(),
   name = faker.internet.userName();
 
@@ -57,9 +57,8 @@ describe("Auth routes", () => {
       ]);
     }
 
-    const response = await client.login(email, password);
+    const { token, provider } = await client.login(email, password);
 
-    const { token, provider } = response;
     expect(provider.email).toEqual(email);
     expect(provider.password).not.toEqual(email);
     expect(typeof token).toBe("string");

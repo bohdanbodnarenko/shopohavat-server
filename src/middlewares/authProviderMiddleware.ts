@@ -8,11 +8,12 @@ export const authProviderMiddleware = async (
   next: NextFunction
 ) => {
   if (!req.header("Authorization")) {
-    res.status(403).json({ error: "Not authenticated" });
+    console.log(req.headers);
+    return res.status(403).json({ error: "Not authenticated" });
   }
   const token = req.header("Authorization").replace("Bearer ", "");
   if (!token) {
-    res.status(403).json({ error: "Wrong token" });
+    return res.status(403).json({ error: "Wrong token" });
   }
   try {
     const { id } = verify(token, process.env.JWT_SECRET as string);

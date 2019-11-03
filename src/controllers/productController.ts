@@ -101,6 +101,7 @@ export const updateProduct = async (
   if (!isOwner) {
     res.status(403).json({ error: "You can change only your own products" });
   }
+
   if (body.categories && body.categories.length) {
     body.categories = await Category.find({
       where: { id: In(body.categories) }
