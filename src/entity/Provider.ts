@@ -5,12 +5,48 @@ import {
   BaseEntity,
   BeforeInsert,
   OneToMany,
-  ManyToMany,
-  JoinTable
+  ManyToMany
 } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import { Product } from "./Product";
 import { Delivery } from "./Delivery";
+
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *      Provider:
+ *        type: object
+ *        required:
+ *          - id
+ *          - email
+ *          - password
+ *          - confirmed
+ *          - forgotPasswordLocked
+ *          - phones
+ *        properties:
+ *          name:
+ *            type: string
+ *          email:
+ *            type: string
+ *            format: email
+ *            description: Email for the provider, needs to be unique.
+ *          password:
+ *            type: text
+ *          site:
+ *            type: string
+ *            format: url
+ *          description:
+ *            type: string
+ *          openTime:
+ *            type: string
+ *          closeTime:
+ *            type: string
+ *          address:
+ *            type: string
+ *          promos:
+ *            type: string
+ */
 
 @Entity()
 export class Provider extends BaseEntity {

@@ -7,11 +7,13 @@ import * as cors from "cors";
 import * as bodyParser from "body-parser";
 import * as RateLimit from "express-rate-limit";
 import * as RateLimitRedisStore from "rate-limit-redis";
+import { serve, setup } from "swagger-ui-express";
 
 import { redis } from "./redis";
 import * as routes from "./routes/";
 import { createTypeormConn } from "./utils/createTypeormConn";
 import httpLogger from "./middlewares/httpLogger";
+import { specs } from "./apiSpecs";
 
 const SESSION_SECRET = "qwe124rwewfsdr1";
 const RedisStore = connectRedis(session as any);
@@ -27,6 +29,8 @@ export const startServer = async () => {
   app.use(cors());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+
+  app.use("/swagger", serve, setup(specs));
 
   app.use(
     new RateLimit({
@@ -67,7 +71,6 @@ export const startServer = async () => {
 
   app.listen(port, () => {
     console.log(`🚀 Server is running on http://localhost:${port}/ 🚀`);
-
     return app;
   });
 };
