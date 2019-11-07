@@ -89,10 +89,9 @@ export const sendForgotPasswordEmail = async (req: Request, res: Response) => {
   }
   await Provider.update({ id: provider.id }, { forgotPasswordLocked: true });
 
-  // todo add frontend url
   const id = v4();
   await redis.set(`${forgotPasswordPrefix}${id}`, provider.id, "ex", 60 * 20);
-  const recoverLink = `${process.env.API_BASE as string}/change-password/${id}`;
+  const recoverLink = `${process.env.FRONTEND_HOST as string}/forgot-password/${id}`;
   console.log(`Recover password link for provider ${email}: ${recoverLink}`);
   emailTransporter.sendMail(
     {
