@@ -1,4 +1,5 @@
 import * as rp from "request-promise";
+import { number } from "yup";
 
 export class TestClient {
   url: string;
@@ -28,6 +29,13 @@ export class TestClient {
     });
   }
 
+  async getCategory(id: number) {
+    return rp.get(`${this.url}/category/${id}`, this.options);
+  }
+
+  async getCategories() {
+    return rp.get(`${this.url}/category/all`, this.options);
+  }
   async createProduct(
     body: {
       price: number;

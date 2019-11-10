@@ -79,13 +79,20 @@ export const productById = async (
 };
 
 export const getProducts = async (req: Request, res: Response) => {
-  const { limit, offset, providerId } = req.query;
+  const { limit, offset, providerId, categoryId } = req.query;
   const products = await Product.createQueryBuilder("product")
     .offset(offset)
     .where(providerId ? { provider: await Provider.findOne(providerId) } : {})
     .leftJoinAndSelect("product.categories", "category")
     .limit(limit || 100)
     .getMany();
+  if (categoryId) {
+    return res.json(
+      products.filter(product =>
+        product.categories.some(category => category.id == categoryId)
+      )
+    );
+  }
   res.json(products);
 };
 
