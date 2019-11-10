@@ -7,6 +7,7 @@ import { validProductSchema } from "../validations/product";
 import { Product } from "../entity/Product";
 import { RequestWithProvider } from "../utils/constants";
 import { Category } from "../entity/Category";
+import { Provider } from "../entity/Provider";
 
 export const createProduct = async (
   req: RequestWithProvider,
@@ -78,9 +79,10 @@ export const productById = async (
 };
 
 export const getProducts = async (req: Request, res: Response) => {
-  const { limit, offset } = req.query;
+  const { limit, offset, providerId } = req.query;
   const products = await Product.createQueryBuilder("product")
     .offset(offset)
+    .where(providerId ? { provider: await Provider.findOne(providerId) } : {})
     .leftJoinAndSelect("product.categories", "category")
     .limit(limit || 100)
     .getMany();
