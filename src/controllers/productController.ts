@@ -42,7 +42,7 @@ export const createProduct = async (
   if (isSameExists) {
     return res.status(400).json([
       {
-        path: "Name",
+        path: "name",
         message: "You already have exactly same product"
       }
     ]);
@@ -84,7 +84,7 @@ export const getProducts = async (req: Request, res: Response) => {
     .offset(offset)
     .where(providerId ? { provider: await Provider.findOne(providerId) } : {})
     .leftJoinAndSelect("product.categories", "category")
-    .limit(limit || 100)
+    .limit(limit && limit < 100 ? limit : 100)
     .getMany();
   if (categoryId) {
     return res.json(
@@ -94,6 +94,15 @@ export const getProducts = async (req: Request, res: Response) => {
     );
   }
   res.json(products);
+};
+
+export const getProductsCount = async (req: Request, res: Response) => {
+  const { providerId, categoryId } = req.query;
+  const count = await Product.createQueryBuilder("product")
+    .where(providerId ? { provider: await Provider.findOne(providerId) } : {})
+    .leftJoinAndSelect("product.categories", "category")
+    .getCount();
+  res.json({ count });
 };
 
 export const getProduct = async (req: Request & any, res: Response) =>
